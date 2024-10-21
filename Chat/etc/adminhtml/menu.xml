@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework/Menu/etc/menu.xsd">
+    <menu>
+        <add id="Aligent_Chat::main_menu" title="Live Chat Configurations" module="Aligent_Chat" sortOrder="90"
+             parent="Magento_Backend::stores" resource="Aligent_Chat::config"/>
+        <add id="Aligent_Chat::manage" title="Manage Default Chat Configuration" module="Aligent_Chat" sortOrder="1"
+             parent="Aligent_Chat::main_menu" action="chatconfig/edit" resource="Aligent_Chat::config"/>
+        <add id="Aligent_Chat::config_menu" title="Chat Configurations" module="Aligent_Chat" sortOrder="2"
+             parent="Aligent_Chat::main_menu" action="adminhtml/system_config/edit/section/livechat"
+             resource="Aligent_Chat::config_menu"/>
+    </menu>
+</config>

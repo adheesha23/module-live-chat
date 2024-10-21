@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="livechat" sortOrder="5">
+            <label>Aligent</label>
+        </tab>
+        <section id="livechat" translate="label" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Chat Configuration</label>
+            <tab>livechat</tab>
+            <resource>Ap_Chat::config</resource>
+            <group id="general" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label><![CDATA[<strong>Settings</strong>]]></label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="license" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1" canRestore="1">
+                    <label>License Number</label>
+                    <depends>
+                        <field id="livechat/general/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="groups" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1"
+                       showInStore="1" canRestore="1">
+                    <label>Group</label>
+                    <depends>
+                        <field id="livechat/general/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="params" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1"
+                       showInStore="1" canRestore="1">
+                    <label>Params</label>
+                    <depends>
+                        <field id="livechat/general/enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
