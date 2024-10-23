@@ -13,6 +13,14 @@ class Index extends Action
     protected PageFactory $resultPageFactory;
     private ConfigurationInterface $liveChatConfigInterface;
 
+    /**
+     * Constructor method for initializing dependencies.
+     *
+     * @param Context $context The context in which the class operates.
+     * @param PageFactory $resultPageFactory Factory for creating result pages.
+     * @param ConfigurationInterface $liveChatConfigInterface Interface for live chat configuration.
+     * @return void
+     */
     public function __construct(
         Context $context,
         PageFactory $resultPageFactory,

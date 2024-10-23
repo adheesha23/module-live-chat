@@ -21,12 +21,12 @@
 
 - Admin Form:
 
-    The module provides an admin page with a form to input and update the default scope values for above LiveChat settings.
+    The module provides an admin page with a form to input the default scope values for above LiveChat settings.
 
     Once the form is submitted:
 
   - The relevant store configuration fields are updated.
-  - A log file will be saved at project root/var/log/livechat.log with the values for livechat settings, time stamp and the admin user name who updated data.
+  - A log file will be saved at project root/var/log/live_chat.log with the values for livechat settings, time stamp and the admin user name who updated data.
 
 
 ## Installation
@@ -54,14 +54,15 @@
 ## Module Usage
 
 ### Magento Admin
-- Once the module is installed go magento admin dashboard.
-- Go to Stores menu tab and there Live Chat Configuration section will appear. Under that,
-  - Manage Default Chat Configurations - This will go to admin form that manage default chat configuration
-  - Chat Configuration - This will go to ALIGENT > Chat Configuration tab in store configuration
+- Once the module is installed go to Magento admin dashboard.
+- Go to Stores menu tab and there 'Live Chat Configuration' section will appear. Under that,
+  - Manage Default Chat Configurations - This will go to admin form that manage default chat configurations.
+  - Chat Configuration - This will go to ALIGENT > Chat Configuration tab in store configurations page.
+
 ### Logging
-- To check the updated settings log got go to project root/var/log folder and check livechat.log file.
+- To check the updated settings log, go to project root/var/log folder and check live_chat.log file.
     ```
-    cat livechat.log 
+    cat live_chat.log 
     ```
 
 ## Test Cases

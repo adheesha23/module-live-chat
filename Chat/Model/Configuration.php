@@ -4,9 +4,6 @@ namespace Aligent\Chat\Model;
 
 use Aligent\Chat\Api\ConfigurationInterface;
 use Aligent\Chat\Logger\LiveChatLogger;
-//use Aligent\Chat\Logger\ChatLogger;
-//use Psr\Log\LoggerInterface;
-//use Magento\Framework\Logger\Monolog as LiveChatLogger;
 use Magento\Backend\Model\Auth\Session as AdminSession;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
@@ -100,10 +97,10 @@ class Configuration implements ConfigurationInterface
     /**
      * Sets the live chat form data to the respective configurations.
      *
-     * @param mixed $liveChatFormData The data from the live chat form containing license number, groups, and parameters.
+     * @param array $liveChatFormData The data from the live chat form containing license number, groups, and parameters.
      * @return void
      */
-    public function setLiveChatConfigurationsFormData(mixed $liveChatFormData): void
+    public function setLiveChatConfigurationsFormData(array $liveChatFormData): void
     {
         $liveChatLicenseNumber = $liveChatFormData['livechat_license_number'] ?? '';
         $liveChatGroups = $liveChatFormData['livechat_groups'] ?? '';

@@ -17,11 +17,11 @@ interface ConfigurationInterface
     /**
      * Set the live chat form data into the configurations.
      *
-     * @param mixed $liveChatFormData The data to be set in the live chat configuration.
+     * @param array $liveChatFormData The data to be set in the live chat configuration.
      *
      * @return void
      */
-    public function setLiveChatConfigurationsFormData(mixed $liveChatFormData): void;
+    public function setLiveChatConfigurationsFormData(array $liveChatFormData): void;
 
     /**
      * Set the license information for the live chat feature.

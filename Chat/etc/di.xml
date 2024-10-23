@@ -1,17 +1,13 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-
-    <!-- Preference for the Configuration Interface -->
     <preference for="Aligent\Chat\Api\ConfigurationInterface" type="Aligent\Chat\Model\Configuration"/>
 
-    <!-- Aligent Chat Configuration Class Dependencies -->
     <type name="Aligent\Chat\Model\Configuration">
         <arguments>
             <argument name="adminSession" xsi:type="object">Magento\Backend\Model\Auth\Session</argument>
         </arguments>
     </type>
 
-    <!-- Virtual Type for LiveChatLogger -->
     <virtualType name="Aligent\Chat\Virtual\Logger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="handlers" xsi:type="array">
@@ -22,7 +18,6 @@
         </arguments>
     </virtualType>
 
-    <!-- Virtual Type for Logger Handler -->
     <virtualType name="Aligent\Chat\Virtual\LoggerHandler" type="Magento\Framework\Logger\Handler\Base">
         <arguments>
             <argument name="fileName" xsi:type="string">/var/log/live_chat.log</argument>
