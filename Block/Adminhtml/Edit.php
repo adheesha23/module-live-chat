@@ -1,5 +1,5 @@
 <?php
-namespace Aligent\Block\Adminhtml;
+namespace Aligent\Chat\Block\Adminhtml;
 
 use Magento\Backend\Block\Widget\Form\Container;
 

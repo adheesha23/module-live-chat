@@ -2,7 +2,7 @@
 
 namespace Aligent\Chat\Model;
 
-use Aligent\Api\ConfigurationInterface;
+use Aligent\Chat\Api\ConfigurationInterface;
 use Aligent\Chat\Logger\LiveChatLogger;
 use Magento\Backend\Model\Auth\Session as AdminSession;
 use Magento\Framework\App\Cache\Frontend\Pool;

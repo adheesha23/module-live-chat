@@ -1,5 +1,5 @@
 <?php
-namespace Aligent\Block\Adminhtml\Edit;
+namespace Aligent\Chat\Block\Adminhtml\Edit;
 
 use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Framework\Exception\LocalizedException;

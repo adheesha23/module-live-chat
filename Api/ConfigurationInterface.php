@@ -1,6 +1,6 @@
 <?php
 
-namespace Aligent\Api;
+namespace Aligent\Chat\Api;
 
 /**
  * Interface for managing the configuration settings of the Aligent LiveChat module.

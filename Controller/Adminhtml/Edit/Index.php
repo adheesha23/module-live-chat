@@ -1,7 +1,7 @@
 <?php
-namespace Aligent\Controller\Adminhtml\Edit;
+namespace Aligent\Chat\Controller\Adminhtml\Edit;
 
-use Aligent\Api\ConfigurationInterface;
+use Aligent\Chat\Api\ConfigurationInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\NotFoundException;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Aligent\Controller\Adminhtml\Edit;
+namespace Aligent\Chat\Controller\Adminhtml\Edit;
 
-use Aligent\Api\ConfigurationInterface;
+use Aligent\Chat\Api\ConfigurationInterface;
 use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
