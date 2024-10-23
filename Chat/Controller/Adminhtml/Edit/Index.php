@@ -1,12 +1,12 @@
 <?php
 namespace Aligent\Chat\Controller\Adminhtml\Edit;
 
+use Aligent\Chat\Api\ConfigurationInterface;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use Aligent\Chat\Api\Data\ConfigurationInterface;
 
 class Index extends Action
 {

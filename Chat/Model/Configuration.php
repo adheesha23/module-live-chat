@@ -2,14 +2,17 @@
 
 namespace Aligent\Chat\Model;
 
-use Aligent\Chat\Api\Data\ConfigurationInterface;
+use Aligent\Chat\Api\ConfigurationInterface;
 use Aligent\Chat\Logger\LiveChatLogger;
+//use Aligent\Chat\Logger\ChatLogger;
+//use Psr\Log\LoggerInterface;
+//use Magento\Framework\Logger\Monolog as LiveChatLogger;
+use Magento\Backend\Model\Auth\Session as AdminSession;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Backend\Model\Auth\Session as AdminSession;
 
 /**
  * Configuration class that manages settings and cache related to LiveChat functionality.
@@ -44,7 +47,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @var LiveChatLogger
      */
-    private LiveChatLogger $liveChatLogger;
+    private LiveChatLogger $logger;
 
     const string CONFIG_PATH_GENERAL_ENABLED = 'livechat/general/enabled';
     const string CONFIG_PATH_GENERAL_LICENCE = 'livechat/general/license';
@@ -70,7 +73,7 @@ class Configuration implements ConfigurationInterface
         TypeListInterface    $cacheTypeList,
         Pool                 $cacheFrontendPool,
         AdminSession         $adminSession,
-        LiveChatLogger       $liveChatLogger
+        LiveChatLogger           $logger
     )
     {
         $this->scopeConfig = $scopeConfig;
@@ -78,7 +81,7 @@ class Configuration implements ConfigurationInterface
         $this->cacheTypeList = $cacheTypeList;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->adminSession = $adminSession;
-        $this->liveChatLogger = $liveChatLogger;
+        $this->logger = $logger;
     }
 
     /**
@@ -100,35 +103,35 @@ class Configuration implements ConfigurationInterface
      * @param mixed $liveChatFormData The data from the live chat form containing license number, groups, and parameters.
      * @return void
      */
-    public function updateLiveChatConfigurationsFormData(mixed $liveChatFormData): void
+    public function setLiveChatConfigurationsFormData(mixed $liveChatFormData): void
     {
         $liveChatLicenseNumber = $liveChatFormData['livechat_license_number'] ?? '';
         $liveChatGroups = $liveChatFormData['livechat_groups'] ?? '';
         $liveChatParams = $liveChatFormData['livechat_params'] ?? '';
 
-        $this->updateLiveChatConfigurations($liveChatLicenseNumber, $liveChatGroups, $liveChatParams);
+        $this->setLiveChatConfigurations($liveChatLicenseNumber, $liveChatGroups, $liveChatParams);
         $this->logLiveChatConfigChange($liveChatLicenseNumber, $liveChatGroups, $liveChatParams);
         $this->cacheCleanByTags();
     }
 
     /**
-     * Updates the configurations for live chat based on the provided parameters.
+     * Set the configurations for live chat based on the provided parameters.
      *
      * @param string $licenseNumber The license number for the live chat service.
      * @param string $groups The groups to configure in the live chat.
      * @param string $params Additional parameters for live chat configuration.
      * @return void
      */
-    private function updateLiveChatConfigurations(string $licenseNumber, string $groups, string $params): void
+    private function setLiveChatConfigurations(string $licenseNumber, string $groups, string $params): void
     {
         if ($licenseNumber) {
-            $this->updateLiveChatLicense($licenseNumber);
+            $this->setLiveChatLicense($licenseNumber);
         }
         if ($groups) {
-            $this->updateLiveChatGroup($groups);
+            $this->setLiveChatGroup($groups);
         }
         if ($params) {
-            $this->updateLiveChatParams($params);
+            $this->setLiveChatParams($params);
         }
     }
 
@@ -153,7 +156,8 @@ class Configuration implements ConfigurationInterface
             'livechat_groups' => $groups,
             'livechat_params' => $params,
         ];
-        $this->liveChatLogger->logData($dataToLog);
+
+        $this->logger->logData($dataToLog);
     }
 
     /**
@@ -162,7 +166,7 @@ class Configuration implements ConfigurationInterface
      * @param mixed $licenseNumber
      * @return void
      */
-    public function updateLiveChatLicense(mixed $licenseNumber): void
+    public function setLiveChatLicense(mixed $licenseNumber): void
     {
         $this->saveConfigData(self::CONFIG_PATH_GENERAL_LICENCE, $licenseNumber);
     }
@@ -173,7 +177,7 @@ class Configuration implements ConfigurationInterface
      * @param mixed $groups
      * @return void
      */
-    public function updateLiveChatGroup(mixed $groups): void
+    public function setLiveChatGroup(mixed $groups): void
     {
         $this->saveConfigData(self::CONFIG_PATH_GENERAL_GROUP, $groups);
     }
@@ -184,7 +188,7 @@ class Configuration implements ConfigurationInterface
      * @param mixed $params
      * @return void
      */
-    public function updateLiveChatParams(mixed $params): void
+    public function setLiveChatParams(mixed $params): void
     {
         $this->saveConfigData(self::CONFIG_PATH_GENERAL_PARAMS, $params);
     }
@@ -199,6 +203,45 @@ class Configuration implements ConfigurationInterface
     private function saveConfigData(string $path, mixed $value): void
     {
         $this->configWriter->save($path, $value, self::DEFAULT_SCOPE, self::DEFAULT_SCOPE_ID);
+    }
+
+    /**
+     * Retrieves the live chat license key.
+     *
+     * @return string The live chat license key.
+     */
+    public function getLiveChatLicense(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::CONFIG_PATH_GENERAL_LICENCE,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Retrieves the live chat group configuration value.
+     *
+     * @return string The configured live chat group for the current store scope.
+     */
+    public function getLiveChatGroup(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::CONFIG_PATH_GENERAL_GROUP,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * Get advanced params config value
+     *
+     * @return string
+     */
+    public function getLiveChatParams(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::CONFIG_PATH_GENERAL_PARAMS,
+            ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**

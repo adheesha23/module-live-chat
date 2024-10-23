@@ -96,12 +96,12 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * Tests the updateLiveChatConfigurationsFormData method to ensure it correctly updates
+     * Tests the setLiveChatConfigurationsFormData method to ensure it correctly sets
      * the configuration settings for LiveChat using the provided form data.
      *
      * @return void
      */
-    public function testUpdateLiveChatConfigurationsFormData(): void
+    public function testSetLiveChatConfigurationsFormData(): void
     {
         $formData = [
             'livechat_license_number' => '12345',
@@ -132,16 +132,16 @@ class ConfigurationTest extends TestCase
                 ['full_page']
             );
 
-        $this->configuration->updateLiveChatConfigurationsFormData($formData);
+        $this->configuration->setLiveChatConfigurationsFormData($formData);
     }
 
     /**
-     * Tests the updateLiveChatLicense method by ensuring that the
+     * Tests the setLiveChatLicense method by ensuring that the
      * configWriterMocks 'save' method is called with the correct arguments.
      *
      * @return void
      */
-    public function testUpdateLiveChatLicense(): void
+    public function testSetLiveChatLicense(): void
     {
         $licenseNumber = '12345';
         $expectedConfigPath = 'livechat/general/license';
@@ -156,16 +156,16 @@ class ConfigurationTest extends TestCase
                 self::EXPECTED_SCOPE_ID
             );
 
-        $this->configuration->updateLiveChatLicense($licenseNumber);
+        $this->configuration->setLiveChatLicense($licenseNumber);
     }
 
     /**
-     * Tests the updateLiveChatGroup method to ensure it correctly calls the config writer's 'save' method
+     * Tests the setLiveChatGroup method to ensure it correctly calls the config writer's 'save' method
      * with the expected parameters.
      *
      * @return void
      */
-    public function testUpdateLiveChatGroup(): void
+    public function testSetLiveChatGroup(): void
     {
         $groups = 'Sales, Support';
         $expectedConfigPath = 'livechat/general/groups';
@@ -180,16 +180,16 @@ class ConfigurationTest extends TestCase
                 self::EXPECTED_SCOPE_ID
             );
 
-        $this->configuration->updateLiveChatGroup($groups);
+        $this->configuration->setLiveChatGroup($groups);
     }
 
     /**
-     * Tests the updateLiveChatParams method to ensure it correctly calls the config writer's 'save' method
+     * Tests the setLiveChatParams method to ensure it correctly calls the config writer's 'save' method
      * with the expected parameters.
      *
      * @return void
      */
-    public function testUpdateLiveChatParams(): void
+    public function testSetLiveChatParams(): void
     {
         $params = 'key1=value1, key2=value2';
         $expectedConfigPath = 'livechat/general/params';
@@ -204,7 +204,7 @@ class ConfigurationTest extends TestCase
                 self::EXPECTED_SCOPE_ID
             );
 
-        $this->configuration->updateLiveChatParams($params);
+        $this->configuration->setLiveChatParams($params);
     }
 
     /**
@@ -253,10 +253,34 @@ class ConfigurationTest extends TestCase
             }));
 
         // Call the method being tested
-        $this->configuration->updateLiveChatConfigurationsFormData([
+        $this->configuration->setLiveChatConfigurationsFormData([
             'livechat_license_number' => '12345',
             'livechat_groups' => 'Support',
             'livechat_params' => 'param1'
         ]);
+    }
+
+    /**
+     * Tests the setLiveChatGroup method with a null value.
+     *
+     * @return void
+     */
+    public function testSetLiveChatGroupWithNullValue()
+    {
+        $nullGroups = null;
+        $this->configuration->setLiveChatGroup($nullGroups);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Tests the setLiveChatParams method with an empty string value.
+     *
+     * @return void
+     */
+    public function testSetLiveChatParamsWithEmptyValue()
+    {
+        $emptyParams = '';
+        $this->configuration->setLiveChatParams($emptyParams);
+        $this->assertTrue(true);
     }
 }

@@ -1,61 +1,36 @@
 <?php
 namespace Aligent\Chat\Logger;
+use Psr\Log\LoggerInterface;
 
-use Exception;
-use Monolog\Handler\HandlerException;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Monolog\Logger as MonologLogger;
-use RuntimeException;
-
-class LiveChatLogger extends MonologLogger
+/**
+ * Class responsible for logging live chat events and messages.
+ */
+class LiveChatLogger
 {
-
     /**
-     * Path to the log file for LiveChat.
-     *
-     * This constant defines the file system path where LiveChat logs are stored.
+     * @var LoggerInterface
      */
-    const string LIVECHAT_LOG_PATH = '/var/log/livechat.log';
-    private MonologLogger $logger;
+    protected LoggerInterface $logger;
 
     /**
-     * Class constructor.
+     * Constructor method for initializing Logger.
      *
-     * Initializes a logger for the 'livechat' channel and sets up a file handler.
-     * Throws a RuntimeException if the base path constant "BP" is not defined.
-     * Logs errors if logger initialization fails.
-     *
+     * @param LoggerInterface $logger The logger instance to be used.
      * @return void
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
-        try {
-            // Initialize logger with the channel name 'livechat'
-            $this->logger = new Logger('livechat');
-
-            // Check if BP is defined
-            if (!defined('BP')) {
-                throw new RuntimeException('Base path constant "BP" is not defined.');
-            }
-
-            // Push handler for logging into the specific file
-            $this->logger->pushHandler(new StreamHandler(BP . self::LIVECHAT_LOG_PATH, Logger::INFO));
-        } catch (HandlerException $e) {
-            error_log("Failed to initialize logger: " . $e->getMessage());
-        } catch (Exception $e) {
-            error_log("Unexpected error during logger initialization: " . $e->getMessage());
-        }
+        $this->logger = $logger;
     }
 
     /**
-     * Logs the LiveChat configuration data.
+     * Logs data encapsulated in an array message.
      *
-     * @param array $dataToLog
+     * @param array $message The message data to be logged.
      * @return void
      */
-    public function logData(array $dataToLog): void
+    public function logData(array $message): void
     {
-        $this->logger->info('LiveChat configuration data saved.', $dataToLog);
+        $this->logger->info('Live chat configurations update: '.json_encode($message));
     }
 }

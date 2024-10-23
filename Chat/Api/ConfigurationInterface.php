@@ -1,6 +1,6 @@
 <?php
 
-namespace Aligent\Chat\Api\Data;
+namespace Aligent\Chat\Api;
 
 /**
  * Interface for managing the configuration settings of the Aligent LiveChat module.
@@ -21,28 +21,49 @@ interface ConfigurationInterface
      *
      * @return void
      */
-    public function updateLiveChatConfigurationsFormData(mixed $liveChatFormData): void;
+    public function setLiveChatConfigurationsFormData(mixed $liveChatFormData): void;
 
     /**
      * Set the license information for the live chat feature.
      *
      * @param mixed $licenseNumber
      */
-    public function updateLiveChatLicense(mixed $licenseNumber);
+    public function setLiveChatLicense(mixed $licenseNumber);
 
     /**
      * Set the group for live chat.
      *
      * @param mixed $groups
      */
-    public function updateLiveChatGroup(mixed $groups);
+    public function setLiveChatGroup(mixed $groups);
 
     /**
      * Set the parameters for the live chat feature.
      *
      * @param mixed $params
      */
-    public function updateLiveChatParams(mixed $params);
+    public function setLiveChatParams(mixed $params);
+
+    /**
+     * Retrieves the license key for the live chat service.
+     *
+     * @return string The license key for the live chat.
+     */
+    public function getLiveChatLicense(): string;
+
+    /**
+     * Retrieves the group identifier for the live chat service.
+     *
+     * @return string The group identifier for the live chat.
+     */
+    public function getLiveChatGroup(): string;
+
+    /**
+     * Retrieves the parameters for the live chat service.
+     *
+     * @return string The parameters for the live chat.
+     */
+    public function getLiveChatParams(): string;
 
     /**
      * Perform cache cleaning operation based on specified tags.

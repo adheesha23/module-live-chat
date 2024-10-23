@@ -2,7 +2,7 @@
 
 namespace Aligent\Chat\Controller\Adminhtml\Edit;
 
-use Aligent\Chat\Api\Data\ConfigurationInterface;
+use Aligent\Chat\Api\ConfigurationInterface;
 use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -95,14 +95,14 @@ class Save extends Action
      */
     private function validateNotEmpty(string $value, string $fieldName): void
     {
-        if (trim($value) === '') {
+        if (empty(trim($value))) {
             throw new LocalizedException(__("Please Enter the $fieldName and try again."));
         }
     }
 
     private function updateLiveChatSettings(array $data): void
     {
-        $this->configInterface->updateLiveChatConfigurationsFormData($data);
+        $this->configInterface->setLiveChatConfigurationsFormData($data);
     }
 
     private function showSuccessMessage(): void
