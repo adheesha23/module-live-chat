@@ -38,7 +38,7 @@
     ```
   - Or, clone from the repository. Run below command from project root directory.   
     ```
-    git clone git@github.com:adheesha23/module-live-chat.git app/code/Aligent --depth 1
+    git clone git@github.com:adheesha23/module-live-chat.git app/code/Aligent/Chat
     ```
 2. Enable the module:
     ```
