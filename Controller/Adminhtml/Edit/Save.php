@@ -3,6 +3,7 @@
 namespace Aligent\Chat\Controller\Adminhtml\Edit;
 
 use Aligent\Chat\Api\ConfigurationInterface;
+use Aligent\Chat\Service\LiveChatValidator;
 use Exception;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -15,21 +16,25 @@ class Save extends Action
 {
     private ConfigurationInterface $configInterface;
     protected $messageManager;
-    protected LoggerInterface $logger;
+    private LoggerInterface $logger;
+    private LiveChatValidator $validator;
 
     /**
      * @param Context $context
+     * @param LiveChatValidator $validator
      * @param ConfigurationInterface $configInterface
      * @param ManagerInterface $messageManager
      * @param LoggerInterface $logger
      */
     public function __construct(
         Context                $context,
+        LiveChatValidator      $validator,
         ConfigurationInterface $configInterface,
         ManagerInterface       $messageManager,
         LoggerInterface        $logger
     )
     {
+        $this->validator = $validator;
         $this->configInterface = $configInterface;
         $this->messageManager = $messageManager;
         $this->logger = $logger;
@@ -37,81 +42,27 @@ class Save extends Action
     }
 
     /**
-     * Executes the live chat settings update process. Retrieves POST data from the request, validates it,
-     * and updates live chat configurations accordingly. Displays success or error messages based on the result.
+     * Executes the action of saving live chat settings.
      *
-     * @return ResponseInterface Redirects to the edit page after processing.
+     * @return ResponseInterface
      */
     public function execute(): ResponseInterface
     {
         try {
             $postData = $this->getRequest()->getPostValue();
 
-            if ($this->isPostDataAvailable($postData) && $this->isValidLiveChatData($postData)) {
-                $this->updateLiveChatSettings($postData);
-                $this->showSuccessMessage();
-            } else {
-                $this->showErrorMessage('Invalid live chat data.');
-            }
+            $this->validator->validate($postData);
+            $this->configInterface->setLiveChatConfigurationsFormData($postData);
+            $this->messageManager->addSuccessMessage(__('Live Chat Configurations have been updated'));
         } catch (LocalizedException $e) {
-            $this->showErrorMessage($e->getMessage());
+            $this->messageManager->addErrorMessage($e->getMessage());
 
         } catch (Exception $e) {
             // Log the exception
             $this->logger->error('Error executing save live chat settings', ['exception' => $e]);
-            $this->showErrorMessage('Something went wrong. Please try again.');
+            $this->messageManager->addErrorMessage('Something went wrong. Please try again.');
         }
 
         return $this->_redirect('*/edit/');
-    }
-
-    protected function isPostDataAvailable(array $postData): bool
-    {
-        return !empty($postData);
-    }
-
-    /**
-     * Validates the live chat data.
-     *
-     * @param array $data The live chat data to validate.
-     * @return bool Returns true if all necessary fields are present and non-empty.
-     * @throws LocalizedException if any required field is empty.
-     */
-    protected function isValidLiveChatData(array $data): bool
-    {
-        $this->validateNotEmpty($data['livechat_license_number'], 'Livechat License Number');
-        $this->validateNotEmpty($data['livechat_groups'], 'Livechat Groups');
-        $this->validateNotEmpty($data['livechat_params'], 'Livechat Params');
-
-        return true;
-    }
-
-    /**
-     * Checks if a field is not empty and throws an exception if it is.
-     *
-     * @param string $value The value to check.
-     * @param string $fieldName The name of the field.
-     * @throws LocalizedException if the field is empty.
-     */
-    private function validateNotEmpty(string $value, string $fieldName): void
-    {
-        if (empty(trim($value))) {
-            throw new LocalizedException(__("Please Enter the $fieldName and try again."));
-        }
-    }
-
-    private function updateLiveChatSettings(array $data): void
-    {
-        $this->configInterface->setLiveChatConfigurationsFormData($data);
-    }
-
-    private function showSuccessMessage(): void
-    {
-        $this->messageManager->addSuccessMessage(__('Live Chat Configurations have been updated'));
-    }
-
-    private function showErrorMessage(string $message): void
-    {
-        $this->messageManager->addErrorMessage(__($message));
     }
 }

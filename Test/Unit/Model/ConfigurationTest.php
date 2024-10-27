@@ -5,7 +5,6 @@ namespace Aligent\Chat\Test\Unit\Model;
 
 use Aligent\Chat\Logger\LiveChatLogger;
 use Aligent\Chat\Model\Configuration;
-use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
@@ -61,7 +60,6 @@ class ConfigurationTest extends TestCase
         $this->scopeConfigMock = $this->createMock(ScopeConfigInterface::class);
         $this->configWriterMock = $this->createMock(WriterInterface::class);
         $this->cacheTypeListMock = $this->createMock(TypeListInterface::class);
-        $cachePoolMock = $this->createMock(Pool::class);
         $this->adminSessionMock = $this->getMockBuilder(AdminSession::class)
             ->disableOriginalConstructor()
             ->addMethods(['getUser'])
@@ -73,7 +71,6 @@ class ConfigurationTest extends TestCase
             $this->scopeConfigMock,
             $this->configWriterMock,
             $this->cacheTypeListMock,
-            $cachePoolMock,
             $this->adminSessionMock,
             $this->liveChatLoggerMock
         );
@@ -96,8 +93,10 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * Tests the setLiveChatConfigurationsFormData method to ensure it correctly sets
-     * the configuration settings for LiveChat using the provided form data.
+     * Tests the setLiveChatConfigurationsFormData method by ensuring that
+     * the configWriterMock 'save' method is called with the correct arguments
+     * for each form data field, the logger records the data, and cache clean
+     * is triggered appropriately.
      *
      * @return void
      */
@@ -124,12 +123,10 @@ class ConfigurationTest extends TestCase
             ->with($this->isType('array'));
 
         // Expect cache clean to be called
-        $this->cacheTypeListMock->expects($this->exactly(3))
+        $this->cacheTypeListMock->expects($this->exactly(1))
             ->method('cleanType')
             ->withConsecutive(
-                ['block_html'],
-                ['config'],
-                ['full_page']
+                ['config']
             );
 
         $this->configuration->setLiveChatConfigurationsFormData($formData);
@@ -213,17 +210,15 @@ class ConfigurationTest extends TestCase
      *
      * @return void
      */
-    public function testCacheCleanByTags(): void
+    public function testCleanConfigCache(): void
     {
-        $this->cacheTypeListMock->expects($this->exactly(3))
+        $this->cacheTypeListMock->expects($this->exactly(1))
             ->method('cleanType')
             ->withConsecutive(
-                ['block_html'],
-                ['config'],
-                ['full_page']
+                ['config']
             );
 
-        $this->configuration->cacheCleanByTags();
+        $this->configuration->cleanConfigCache();
     }
 
     /**

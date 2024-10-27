@@ -5,7 +5,6 @@ namespace Aligent\Chat\Model;
 use Aligent\Chat\Api\ConfigurationInterface;
 use Aligent\Chat\Logger\LiveChatLogger;
 use Magento\Backend\Model\Auth\Session as AdminSession;
-use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
@@ -32,11 +31,6 @@ class Configuration implements ConfigurationInterface
     private TypeListInterface $cacheTypeList;
 
     /**
-     * @var Pool
-     */
-    private Pool $cacheFrontendPool;
-
-    /**
      * @var AdminSession
      */
     private AdminSession $adminSession;
@@ -60,15 +54,13 @@ class Configuration implements ConfigurationInterface
      * @param ScopeConfigInterface $scopeConfig Configuration scope for retrieving settings.
      * @param WriterInterface $configWriter Writer interface for updating configuration.
      * @param TypeListInterface $cacheTypeList List of cache types for clearing cache.
-     * @param Pool $cacheFrontendPool Pool of cache frontends for managing cache storage.
-     *
-     * @return void
+     * @param AdminSession $adminSession
+     * @param LiveChatLogger $logger
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         WriterInterface      $configWriter,
         TypeListInterface    $cacheTypeList,
-        Pool                 $cacheFrontendPool,
         AdminSession         $adminSession,
         LiveChatLogger           $logger
     )
@@ -76,7 +68,6 @@ class Configuration implements ConfigurationInterface
         $this->scopeConfig = $scopeConfig;
         $this->configWriter = $configWriter;
         $this->cacheTypeList = $cacheTypeList;
-        $this->cacheFrontendPool = $cacheFrontendPool;
         $this->adminSession = $adminSession;
         $this->logger = $logger;
     }
@@ -95,20 +86,21 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Sets the live chat form data to the respective configurations.
+     * Sets the form data for live chat configurations.
      *
-     * @param array $liveChatFormData The data from the live chat form containing license number, groups, and parameters.
+     * @param array $liveChatFormData The form data containing live chat configuration settings.
+     *
      * @return void
      */
     public function setLiveChatConfigurationsFormData(array $liveChatFormData): void
     {
         $liveChatLicenseNumber = $liveChatFormData['livechat_license_number'] ?? '';
-        $liveChatGroups = $liveChatFormData['livechat_groups'] ?? '';
+        $liveChatGroups = $liveChatFormData['livechat_groups'] ?: 0;
         $liveChatParams = $liveChatFormData['livechat_params'] ?? '';
 
         $this->setLiveChatConfigurations($liveChatLicenseNumber, $liveChatGroups, $liveChatParams);
         $this->logLiveChatConfigChange($liveChatLicenseNumber, $liveChatGroups, $liveChatParams);
-        $this->cacheCleanByTags();
+        $this->cleanConfigCache();
     }
 
     /**
@@ -121,15 +113,9 @@ class Configuration implements ConfigurationInterface
      */
     private function setLiveChatConfigurations(string $licenseNumber, string $groups, string $params): void
     {
-        if ($licenseNumber) {
-            $this->setLiveChatLicense($licenseNumber);
-        }
-        if ($groups) {
-            $this->setLiveChatGroup($groups);
-        }
-        if ($params) {
-            $this->setLiveChatParams($params);
-        }
+        $this->setLiveChatLicense($licenseNumber);
+        $this->setLiveChatGroup($groups);
+        $this->setLiveChatParams($params);
     }
 
     /**
@@ -160,10 +146,10 @@ class Configuration implements ConfigurationInterface
     /**
      * Set live chat license configuration value
      *
-     * @param mixed $licenseNumber
+     * @param string $licenseNumber
      * @return void
      */
-    public function setLiveChatLicense(mixed $licenseNumber): void
+    public function setLiveChatLicense(string $licenseNumber): void
     {
         $this->saveConfigData(self::CONFIG_PATH_GENERAL_LICENCE, $licenseNumber);
     }
@@ -182,10 +168,10 @@ class Configuration implements ConfigurationInterface
     /**
      * Set live chat parameters config value
      *
-     * @param mixed $params
+     * @param string $params
      * @return void
      */
-    public function setLiveChatParams(mixed $params): void
+    public function setLiveChatParams(string $params): void
     {
         $this->saveConfigData(self::CONFIG_PATH_GENERAL_PARAMS, $params);
     }
@@ -242,21 +228,13 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * Cleans the cache by tags for specific cache types.
+     * Cleans the configuration cache.
      *
      * @return void
      */
-    public function cacheCleanByTags(): void
+    public function cleanConfigCache(): void
     {
-        $cacheTypes = ['block_html', 'config', 'full_page'];
-
-        foreach ($cacheTypes as $type) {
-            $this->cacheTypeList->cleanType($type);
-        }
-
-        foreach ($this->cacheFrontendPool as $cacheFrontend) {
-            $cacheFrontend->getBackend()->clean();
-        }
+        $this->cacheTypeList->cleanType('config');
     }
 
     /**

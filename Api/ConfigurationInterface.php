@@ -26,23 +26,23 @@ interface ConfigurationInterface
     /**
      * Set the license information for the live chat feature.
      *
-     * @param mixed $licenseNumber
+     * @param string $licenseNumber
      */
-    public function setLiveChatLicense(mixed $licenseNumber);
+    public function setLiveChatLicense(string $licenseNumber);
 
     /**
      * Set the group for live chat.
      *
-     * @param mixed $groups
+     * @param string $groups
      */
-    public function setLiveChatGroup(mixed $groups);
+    public function setLiveChatGroup(string $groups);
 
     /**
      * Set the parameters for the live chat feature.
      *
-     * @param mixed $params
+     * @param string $params
      */
-    public function setLiveChatParams(mixed $params);
+    public function setLiveChatParams(string $params);
 
     /**
      * Retrieves the license key for the live chat service.
@@ -70,6 +70,6 @@ interface ConfigurationInterface
      *
      * @return void
      */
-    public function cacheCleanByTags(): void;
+    public function cleanConfigCache(): void;
 
 }
